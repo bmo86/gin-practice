@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS me;
+
+CREATE TABLE me (
+    id SERIAL PRIMARY KEY NOT NULL,
+    name VARCHAR(32) NOT NULL,
+    lastname VARCHAR(32) NOT NULL,
+    age INT NOT NULL
+);
