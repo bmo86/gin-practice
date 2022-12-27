@@ -3,6 +3,7 @@ package handlers
 import (
 	"gin-practice/models"
 	"gin-practice/repository"
+	ws "gin-practice/websocket"
 	"net/http"
 	"strconv"
 
@@ -73,5 +74,11 @@ func GetNameHandler() gin.HandlerFunc {
 		}
 
 		ctx.JSON(http.StatusOK, res)
+	}
+}
+
+func HandlerWsGin() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		ws.NewHub().WsHandler(ctx.Writer, ctx.Request)
 	}
 }

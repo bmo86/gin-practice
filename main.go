@@ -9,6 +9,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func bindRoutes() *gin.Engine {
+	r := gin.Default()
+	r.GET("/home", handlers.HomeHandler())
+	r.POST("/me", handlers.CreatedMeHandler())
+	r.GET("/me/:id", handlers.GetNameHandler())
+	r.GET("/ws", handlers.HandlerWsGin())
+	return r
+}
+
 func main() {
 
 	addrPostgres := "postgres://postgres:postgres@localhost:54321/postgres?sslmode=disable"
@@ -20,10 +29,6 @@ func main() {
 
 	repository.SetRepository(repo)
 
-	r := gin.Default()
-	r.GET("/home", handlers.HomeHandler())
-	r.POST("/me", handlers.CreatedMeHandler())
-	r.GET("/me/:id", handlers.GetNameHandler())
-
+	r := bindRoutes()
 	r.Run(":5050")
 }
