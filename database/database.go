@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"gin-practice/models"
+
+	_ "github.com/lib/pq"
 )
 
 type InstaceProstgres struct {
