@@ -3,7 +3,7 @@ package handlers
 import (
 	"gin-practice/models"
 	"gin-practice/repository"
-	ws "gin-practice/websocket"
+	server "gin-practice/server"
 	"net/http"
 	"strconv"
 
@@ -14,15 +14,16 @@ type ResponseMessage struct {
 	Message string `json:"message"`
 }
 
-func HomeHandler() gin.HandlerFunc {
+func HomeHandler(s server.Server) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
 			"message": "hello, my API using gin/golang",
 		})
+
 	}
 }
 
-func CreatedMeHandler() gin.HandlerFunc {
+func CreatedMeHandler(s server.Server) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var m models.Me
 
@@ -47,13 +48,15 @@ func CreatedMeHandler() gin.HandlerFunc {
 			return
 		}
 
+		s.Hub().BroadCast(data, nil)
+
 		ctx.JSON(http.StatusCreated, ResponseMessage{
 			Message: "Created Me",
 		})
 	}
 }
 
-func GetNameHandler() gin.HandlerFunc {
+func GetNameHandler(s server.Server) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		idReq := ctx.Param("id")
@@ -77,8 +80,8 @@ func GetNameHandler() gin.HandlerFunc {
 	}
 }
 
-func HandlerWsGin() gin.HandlerFunc {
+func HandlerWsGin(s server.Server) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		ws.NewHub().WsHandler(ctx.Writer, ctx.Request)
+		s.Hub().WsHandler(ctx.Writer, ctx.Request)
 	}
 }

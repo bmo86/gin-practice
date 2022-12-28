@@ -1,34 +1,31 @@
 package main
 
 import (
-	"gin-practice/database"
+	"context"
 	"gin-practice/handlers"
-	"gin-practice/repository"
+	server "gin-practice/server"
 	"log"
 
 	"github.com/gin-gonic/gin"
 )
 
-func bindRoutes() *gin.Engine {
-	r := gin.Default()
-	r.GET("/home", handlers.HomeHandler())
-	r.POST("/me", handlers.CreatedMeHandler())
-	r.GET("/me/:id", handlers.GetNameHandler())
-	r.GET("/ws", handlers.HandlerWsGin())
-	return r
+func bindRoutes(s server.Server, r *gin.Engine) {
+	r.GET("/home", handlers.HomeHandler(s))
+	r.POST("/me", handlers.CreatedMeHandler(s))
+	r.GET("/me/:id", handlers.GetNameHandler(s))
+	r.GET("/ws", handlers.HandlerWsGin(s))
 }
 
 func main() {
 
-	addrPostgres := "postgres://postgres:postgres@localhost:54321/postgres?sslmode=disable"
+	s, err := server.NewServer(context.Background(), &server.Config{
+		Port:        "5050",
+		DatabaseUrl: "postgres://postgres:postgres@localhost:54321/postgres?sslmode=disable",
+	})
 
-	repo, err := database.NewConnectionDatabase(addrPostgres)
 	if err != nil {
-		log.Fatal(err.Error() + "aqui")
+		log.Fatal(err)
 	}
 
-	repository.SetRepository(repo)
-
-	r := bindRoutes()
-	r.Run(":5050")
+	s.Start(bindRoutes)
 }

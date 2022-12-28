@@ -6,7 +6,7 @@ import (
 
 type Client struct {
 	hub     *Hub
-	id      int
+	id      string
 	socket  *websocket.Conn
 	outband chan []byte
 }
